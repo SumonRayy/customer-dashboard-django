@@ -1,4 +1,4 @@
-<img src="/static/images/logo_top.png" height=90px width=160px />
+<img src="/static/images/logo_top.png" height=180px width=320px />
 
 # Customer Management Interface
 
