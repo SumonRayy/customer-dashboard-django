@@ -1,9 +1,33 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
 from .models import *
-from .forms import OrderForm
+from .forms import OrderForm, CreateUserForm
 
 # Create your views here.
+
+
+def registerPage(request):
+    form = CreateUserForm()
+
+    if request.method == "POST":
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            user = form.cleaned_data.get("username")
+            messages.success(request, "Account was created for " + user)
+
+            return redirect("login")
+
+    context = {"form": form}
+    return render(request, "accounts/register.html", context)
+
+
+def loginPage(request):
+    form = CreateUserForm()
+    context = {"form": form}
+    return render(request, "accounts/login.html", context)
 
 
 def home(request):
@@ -41,8 +65,9 @@ def customer(request, pk):
     return render(request, "accounts/customer.html", context)
 
 
-def createOrder(request):
-    form = OrderForm()
+def createOrder(request, pk):
+    customer = Customer.objects.get(id=pk)
+    form = OrderForm(initial={"customer": customer})
     if request.method == "POST":
         # print("Printing POST:", request.POST)
         form = OrderForm(request.POST)
